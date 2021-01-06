@@ -2,7 +2,7 @@
   "name": "serverside",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "TCPServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
     "dgram": "^1.0.1",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "net": "^1.0.2"
   }
 }

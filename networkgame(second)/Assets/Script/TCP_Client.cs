@@ -10,11 +10,12 @@ public class TCP_Client : MonoBehaviour
 {
     private TcpClient client;
     private NetworkStream nwStream;
-
-    private bool is_Connecting = false;
     private Thread thread;
+
     private string _IPadress;
     private int _Port;
+
+    public bool is_Connecting = false;
 
     void Awake()
     {
@@ -30,7 +31,7 @@ public class TCP_Client : MonoBehaviour
     {
         try
         {
-            Send();
+            Send("return from the client");
             //receive
             while (is_Connecting)
             {
@@ -42,6 +43,7 @@ public class TCP_Client : MonoBehaviour
         }
         catch (Exception e)
         {
+            client.Close();
             Debug.Log(e);
         }
     }
@@ -61,6 +63,7 @@ public class TCP_Client : MonoBehaviour
 
         catch (Exception e)
         {
+            client.Close();
             Debug.Log(e);
             is_Connecting = false;
         }
@@ -72,12 +75,12 @@ public class TCP_Client : MonoBehaviour
         is_Connecting = false;
     }
 
-    public void Send()
+    public void Send(string message)
     {
         try
         {
             nwStream = client.GetStream();
-            byte[] sendBytes = Encoding.ASCII.GetBytes("Hello, from the client");
+            byte[] sendBytes = Encoding.ASCII.GetBytes(message);
             nwStream.Write(sendBytes, 0, sendBytes.Length);
         }
         catch (Exception e)

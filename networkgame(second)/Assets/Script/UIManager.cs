@@ -15,11 +15,14 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            tcp.Send("A button down");
+        }
     }
 
-    private string IPstring;
-    private string Portstring;
+    private string IPstring = "localhost";
+    private string Portstring = "5000";
     private void OnGUI()
     {
         GUI.Box(new Rect(0, 0, 100, 50), "Top-left");
@@ -29,9 +32,16 @@ public class UIManager : MonoBehaviour
 
         IPstring = GUI.TextArea(new Rect(25, Screen.height / 2, 200, 30), IPstring);
         Portstring = GUI.TextArea(new Rect(225, Screen.height / 2, 50, 30), Portstring);
-        if(GUI.Button (new Rect(275, Screen.height / 2, 100, 30), "TCP Connect"))
+
+        bool btn1 = GUI.Button(new Rect(275, Screen.height / 2, 100, 30), "TCP Connect");
+
+        if (btn1 && !tcp.is_Connecting)
         {
             tcp.Connect(IPstring, Portstring);
+        }
+        if (GUI.Button(new Rect(275, Screen.height / 2 - 30, 100, 30), "TCP DisConnect"))
+        {
+            tcp.DisConnect();
         }
     }
 }

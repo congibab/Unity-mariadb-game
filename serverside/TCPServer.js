@@ -8,11 +8,12 @@ server.on("connection", function (socket) {
     console.log("new client connection is made %s".green, remoteAddress);
 
     socket.on('data', function (d) {
+        socket.setEncoding('utf8');
         console.log("Data from %s: %s".cyan, remoteAddress, d);
         socket.write('Hello ' + d);
     });
 
-    socket.on('close', function (err) {
+    socket.on('close', function () {
         console.log("connection from %s closed", remoteAddress);
     });
 

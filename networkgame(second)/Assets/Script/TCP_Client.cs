@@ -27,6 +27,9 @@ public class TCP_Client : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private void ThreadMethod()
     {
         try
@@ -39,10 +42,27 @@ public class TCP_Client : MonoBehaviour
                 int bytesRead = nwStream.Read(receiveBytes, 0, client.ReceiveBufferSize);
                 string receivedString = Encoding.ASCII.GetString(receiveBytes, 0, bytesRead);
                 print("Message received from the server \n " + receivedString);
+
+                try
+                {
+                    UserJSON user = UserJSON.CreateFromJSON(receivedString);
+                    switch (user.type)
+                    {
+                        case "init":
+                            Debug.Log("this is type test");
+                            break;
+                        case "":
+                            break;
+                        default:
+                            break;
+                    }
+
+                } catch(Exception e) { }
             }
         }
         catch (Exception e)
         {
+            is_Connecting = false;
             client.Close();
             Debug.Log(e);
         }
@@ -75,6 +95,22 @@ public class TCP_Client : MonoBehaviour
         is_Connecting = false;
     }
 
+    public void Send(UserJSON data)
+    {
+        try
+        {
+            string message = UserJSON.CreateToJSON(data);
+            nwStream = client.GetStream();
+            byte[] sendBytes = Encoding.ASCII.GetBytes(message);
+            nwStream.Write(sendBytes, 0, sendBytes.Length);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            is_Connecting = false;
+        }
+    }
+
     public void Send(string message)
     {
         try
@@ -89,38 +125,4 @@ public class TCP_Client : MonoBehaviour
             is_Connecting = false;
         }
     }
-
-    [Serializable]
-    public class Item
-    {
-        public string type;
-        public string id;
-        public string name;
-    }
-
-
-    //void TCPTest()
-    //{
-    //    TcpClient client = new TcpClient();
-    //    try
-    //    {
-    //        client.Connect("127.0.0.1", 5000);
-
-    //        //send
-    //        NetworkStream nwStream = client.GetStream();
-    //        byte[] sendBytes = Encoding.ASCII.GetBytes("Hello, from the client");
-    //        nwStream.Write(sendBytes, 0, sendBytes.Length);
-
-    //        //receive
-    //        byte[] receiveBytes = new byte[client.ReceiveBufferSize];
-    //        int bytesRead = nwStream.Read(receiveBytes, 0, client.ReceiveBufferSize);
-    //        string receivedString = Encoding.ASCII.GetString(receiveBytes, 0, bytesRead);
-
-    //        print("Message received from the server \n " + receivedString);
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        print("Exception thrown " + e.Message);
-    //    }
-    //}
 }

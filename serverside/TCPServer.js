@@ -12,34 +12,42 @@ server.on("connection", function (socket) {
     var remoteAddress = socket.remoteAddress + ":" + socket.remotePort;
     var thisClientId = uuidv4();
     sockets[thisClientId] = socket;
+    //sockets.push(socket);
 
-    console.log(Object.keys(sockets).length);
+    var d = {
+        type: 'init',
+        id : thisClientId,
+    };
+    JSON_Send(socket, d);    
     console.log("new client connection is made %s, UUID : %s".green, remoteAddress, thisClientId);
 
     socket.on('data', function (data) {
         socket.setEncoding('utf8');
+        //JSON_Broadcast('broadcast');
+        //=============================
+        //evect hendler function
         try {
             var JSONdata = JSON.parse(data);
             switch (JSONdata.type) {
                 case 'init':                    
                     break;
                 case 'test':
+                    JSON_Broadcast(JSONdata);
                     break;
                 default:
+                    console.log('type is not variable'.yellow);
                     break;
             }
             console.log("Data from %s: %s".cyan, remoteAddress, data);
-            jsonBroadcast('test');
-            //socket.write(data);
+            socket.write(data);
         } catch (error) {
             console.log('resived data type is not json'.yellow);
-            JSON_Broadcast('test broadcast');
-            //JSON_Send(socket, 'testtesttest');
         }
     });
 
     socket.on('close', function () {
         delete sockets[thisClientId];
+        //sockets.pop;
         console.log("connection from %s closed, UUID : %s".yellow, remoteAddress, thisClientId);
     });
 
@@ -61,13 +69,13 @@ function JSON_Send(socket, data){
         socket.write(dataJSON);
         console.log('Send : %s'.blue, dataJSON);     
     } catch (error) {
-        socket.write('test data');
-        console.log('this type is not JSON'.yellow);
+        console.log('data send fail)= this type is not JSON'.yellow);
     }
 }
 
 function JSON_Broadcast(data) {
-    sockets.forEach(function each(socket) {
-        JSON_Send(socket, data);
-    });
+    // Object.keys(sockets).forEach(function(key) {
+    //     JSON_Send(sockets[key], data);
+    // });
+    Object.keys(sockets).forEach(key => JSON_Send(sockets[key], data));
 }

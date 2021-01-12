@@ -17,7 +17,10 @@ public class UIManager : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.A))
         {
-            tcp.Send("A button down");
+            UserJSON test = new UserJSON();
+            test.type = "test";
+            tcp.Send(test);
+            //tcp.Send("A button down");
         }
     }
 

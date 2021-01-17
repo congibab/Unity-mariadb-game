@@ -45,7 +45,7 @@ public class TCP_Client : MonoBehaviour
 
                 try
                 {
-                    UserJSON user = UserJSON.CreateFromJSON(receivedString);
+                    json_data user = json_data.CreateFromJSON(receivedString);
                     switch (user.type)
                     {
                         case "init":
@@ -57,7 +57,7 @@ public class TCP_Client : MonoBehaviour
                             break;
                     }
 
-                } catch(Exception e) { }
+                } catch(Exception e) { Debug.Log(e); }
             }
         }
         catch (Exception e)
@@ -95,11 +95,11 @@ public class TCP_Client : MonoBehaviour
         is_Connecting = false;
     }
 
-    public void Send(UserJSON data)
+    public void Send(json_data data)
     {
         try
         {
-            string message = UserJSON.CreateToJSON(data);
+            string message = json_data.CreateToJSON(data);
             nwStream = client.GetStream();
             byte[] sendBytes = Encoding.ASCII.GetBytes(message);
             nwStream.Write(sendBytes, 0, sendBytes.Length);

@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    TCP_Client tcp;
+    GameObject _networkManagerPraf;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,15 +16,18 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            UserJSON test = new UserJSON();
-            test.type = "test";
-            tcp.Send(test);
-            //tcp.Send("A button down");
-        }
     }
 
+    public void GameStartButton()
+    {
+        if (NetworkManager.instance == null)
+        {
+            Instantiate(_networkManagerPraf);
+        }
+        SceneManager.LoadScene("Main");
+    }
+
+    #if UNITY_EDITOR
     private string IPstring = "localhost";
     private string Portstring = "5000";
     private void OnGUI()
@@ -36,15 +40,15 @@ public class UIManager : MonoBehaviour
         IPstring = GUI.TextArea(new Rect(25, Screen.height / 2, 200, 30), IPstring);
         Portstring = GUI.TextArea(new Rect(225, Screen.height / 2, 50, 30), Portstring);
 
-        bool btn1 = GUI.Button(new Rect(275, Screen.height / 2, 100, 30), "TCP Connect");
-
-        if (btn1 && !tcp.is_Connecting)
+        if (GUI.Button(new Rect(275, Screen.height / 2, 100, 30), "TCP Connect") && NetworkManager.instance == null)
         {
-            tcp.Connect(IPstring, Portstring);
+            Instantiate(_networkManagerPraf);
         }
-        if (GUI.Button(new Rect(275, Screen.height / 2 - 30, 100, 30), "TCP DisConnect"))
+        if (GUI.Button(new Rect(275, Screen.height / 2 - 30, 100, 30), "TCP DisConnect") && NetworkManager.instance != null)
         {
-            tcp.DisConnect();
+            //NetworkManager.instance.DisConnect();
+            Destroy(NetworkManager.instance.gameObject);
         }
     }
+    #endif
 }

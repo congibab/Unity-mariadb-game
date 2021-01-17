@@ -30,6 +30,7 @@ server.on("connection", function (socket) {
             var JSONdata = JSON.parse(data);
             switch (JSONdata.type) {
                 case 'init':                    
+                
                     break;
                 case 'test':
                     JSON_Broadcast(JSONdata);

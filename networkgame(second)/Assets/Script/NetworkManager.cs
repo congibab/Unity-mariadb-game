@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -18,6 +19,9 @@ public class NetworkManager : MonoBehaviour
     private int _Port;
 
     public bool is_Connecting = false;
+
+    [SerializeField]
+    UIManager uiManager;
 
     void Awake()
     {
@@ -59,14 +63,22 @@ public class NetworkManager : MonoBehaviour
                     switch (user.type)
                     {
                         case "init":
-
                             clientStatus.OwnID = user.id;
+                            clientStatus.userType = user.userType;
+
                             user.type = "anotherUUID";
                             user.id = clientStatus.OwnID;
                             Send(json_data.CreateToJSON(user));
                             break;
                         case "anotherUUID":
                             clientStatus.AnotherID = user.id;
+                            break;
+
+                        case "GameStart":
+                            clientStatus.is_gameRun = true;
+                            break;
+                        case "turnChange":
+                            
                             break;
                         default:
                             break;
@@ -142,4 +154,5 @@ public class NetworkManager : MonoBehaviour
             is_Connecting = false;
         }
     }
+
 }

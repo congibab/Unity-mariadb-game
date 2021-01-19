@@ -7,6 +7,8 @@ public class json_data
 {
     public string type;
     public string id;
+    public string userType;
+    public bool is_gameRun;
 
     public static json_data CreateFromJSON(string data)
     {

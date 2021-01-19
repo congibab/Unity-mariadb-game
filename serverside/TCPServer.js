@@ -13,13 +13,20 @@ var server = net.createServer();
 server.on("connection", function (socket) {
     var remoteAddress = socket.remoteAddress + ":" + socket.remotePort;
     var thisClientId = uuidv4();
-    sockets[thisClientId] = socket;
-
     var d = {
         type: 'init',
         id: thisClientId,
+        userType: ""
     };
+
+    if (Object.keys(sockets).length === 0) d.userType = 'host';
+    else d.userType = 'guest';
+
+    sockets[thisClientId] = socket;
+
     JSON_Send(socket, d);
+    //JSON_Broadcast(socket, d);
+
     console.log("new client connection is made %s, UUID : %s".green, remoteAddress, thisClientId);
 
     socket.on('data', function (data) {
@@ -34,8 +41,13 @@ server.on("connection", function (socket) {
 
                     break;
                 case 'anotherUUID':
+                    get_another_uuid(socket, JSONdata);
+                    break;
+                case 'GameStart':
+                    JSON_ALL_Broadcast({type : JSONdata.type});
+                    break;
+                case 'turnChange':
 
-                    get_another_uuid(JSONdata, socket);
                     break;
                 default:
                     console.log('type is not variable'.yellow);
@@ -44,12 +56,12 @@ server.on("connection", function (socket) {
             console.log("Data from %s: %s".cyan, remoteAddress, data);
         } catch (error) {
             console.log('resived data type is not json'.yellow);
+            //console.log(' %s'.yellow, error);
         }
     });
 
     socket.on('close', function () {
         delete sockets[thisClientId];
-        //sockets.pop;
         console.log("connection from %s closed, UUID : %s".yellow, remoteAddress, thisClientId);
     });
 
@@ -75,7 +87,7 @@ function JSON_Send(socket, data) {
     }
 }
 
-function JSON_Broadcast(data) {
+function JSON_ALL_Broadcast(data) {
     Object.keys(sockets).forEach(key => JSON_Send(sockets[key], data));
 }
 
@@ -89,8 +101,7 @@ function JSON_Broadcast(socket, data) {
 }
 
 
-function get_another_uuid(JSONdata, socket) {
-
+function get_another_uuid(socket, JSONdata) {
     var d = {
         type: JSONdata.type,
         id: JSONdata.id

@@ -59,9 +59,14 @@ public class NetworkManager : MonoBehaviour
                     switch (user.type)
                     {
                         case "init":
-                            Debug.Log("this is type test");
+
+                            clientStatus.OwnID = user.id;
+                            user.type = "anotherUUID";
+                            user.id = clientStatus.OwnID;
+                            Send(json_data.CreateToJSON(user));
                             break;
-                        case "":
+                        case "anotherUUID":
+                            clientStatus.AnotherID = user.id;
                             break;
                         default:
                             break;

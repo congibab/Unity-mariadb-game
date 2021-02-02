@@ -25,7 +25,6 @@ server.on("connection", function (socket) {
     sockets[thisClientId] = socket;
 
     JSON_Send(socket, d);
-    //JSON_Broadcast(socket, d);
 
     console.log("new client connection is made %s, UUID : %s".green, remoteAddress, thisClientId);
 

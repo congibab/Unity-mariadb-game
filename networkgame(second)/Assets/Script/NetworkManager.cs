@@ -25,19 +25,22 @@ public class NetworkManager : MonoBehaviour
 
     void Awake()
     {
-        Connect("localhost", "5000");
+        if(instance == null)
+        {
+            Connect("localhost", "5000");
+        }
     }
 
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     void OnDestroy()
     {
         instance = null;
         client.Close();
-        is_Connecting = false;
+        //is_Connecting = false;
     }
 
     /// <summary>
